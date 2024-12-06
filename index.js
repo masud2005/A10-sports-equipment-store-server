@@ -29,6 +29,7 @@ async function run() {
 
         const sportsEquipments = client.db("SportsEquipments").collection("equipments");
 
+        //Store data to mongoDB
         app.post('/equipments', async (req, res) => {
             const newEquipments = req.body;
             // console.log(newEquipments);
@@ -36,14 +37,14 @@ async function run() {
             res.send(result);
         })
 
-        // All Sports Equipment
+        //Read All Sports Equipment
         app.get('/equipments', async (req, res) => {
             const cursor = sportsEquipments.find();
             const result = await cursor.toArray();
             res.send(result);
         })
 
-        // Specific equipment Id
+        //Read Specific equipment Id
         app.get('/equipments/:id', async (req, res) => {
             const id = req.params.id;
             // console.log(id);
@@ -53,7 +54,7 @@ async function run() {
             res.send(result);
         })
 
-        // Specific equipment email
+        //Read Specific equipment email
         app.get('/equipments/email/:email', async (req, res) => {
             const email = req.params.email;
             // console.log(email);
@@ -62,6 +63,35 @@ async function run() {
             const result = await sportsEquipments.find(query).toArray();
             // console.log(result);
             res.send(result)
+        })
+
+        // Update Equipment
+        app.patch('/equipments/:id', async (req, res) => {
+            const id = req.params.id;
+            // console.log(id);
+            const filter = { _id: new ObjectId(id) }
+            // console.log(filter);
+            const options = { upsert: true };
+            const updatedEquipment = req.body;
+            // console.log(updatedEquipment);
+            const equipment = {
+                $set: {
+                    image: updatedEquipment.image,
+                    itemName: updatedEquipment.itemName,
+                    categoryName: updatedEquipment.categoryName,
+                    price: updatedEquipment.price,
+                    rating: updatedEquipment.rating,
+                    customization: updatedEquipment.customization,
+                    processingTime: updatedEquipment.processingTime,
+                    stockStatus: updatedEquipment.stockStatus,
+                    userEmail: updatedEquipment.userEmail,
+                    userName: updatedEquipment.userName,
+                    description: updatedEquipment.description,
+                }
+            }
+            const result = await sportsEquipments.updateOne(filter, equipment, options);
+            // console.log(result);
+            res.send(result);
         })
 
         console.log("Pinged your deployment. You successfully connected to MongoDB!");

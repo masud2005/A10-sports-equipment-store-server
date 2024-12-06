@@ -32,7 +32,6 @@ async function run() {
         //Store data to mongoDB
         app.post('/equipments', async (req, res) => {
             const newEquipments = req.body;
-            // console.log(newEquipments);
             const result = await sportsEquipments.insertOne(newEquipments);
             res.send(result);
         })
@@ -47,9 +46,7 @@ async function run() {
         //Read Specific equipment Id
         app.get('/equipments/:id', async (req, res) => {
             const id = req.params.id;
-            // console.log(id);
             const query = { _id: new ObjectId(id) }
-            // console.log(query);
             const result = await sportsEquipments.findOne(query);
             res.send(result);
         })
@@ -57,23 +54,17 @@ async function run() {
         //Read Specific equipment email
         app.get('/equipments/email/:email', async (req, res) => {
             const email = req.params.email;
-            // console.log(email);
             const query = { userEmail: email }
-            // console.log(query);
             const result = await sportsEquipments.find(query).toArray();
-            // console.log(result);
             res.send(result)
         })
 
         // Update Equipment
         app.patch('/equipments/:id', async (req, res) => {
             const id = req.params.id;
-            // console.log(id);
             const filter = { _id: new ObjectId(id) }
-            // console.log(filter);
             const options = { upsert: true };
             const updatedEquipment = req.body;
-            // console.log(updatedEquipment);
             const equipment = {
                 $set: {
                     image: updatedEquipment.image,
@@ -90,7 +81,14 @@ async function run() {
                 }
             }
             const result = await sportsEquipments.updateOne(filter, equipment, options);
-            // console.log(result);
+            res.send(result);
+        })
+
+        // Delete Equipment
+        app.delete('/equipments/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: new ObjectId(id)}
+            const result = await sportsEquipments.deleteOne(query);
             res.send(result);
         })
 

@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -29,18 +29,30 @@ async function run() {
 
         const sportsEquipments = client.db("SportsEquipments").collection("equipments");
 
-        app.post('/equipments', async(req, res) => {
+        app.post('/equipments', async (req, res) => {
             const newEquipments = req.body;
             // console.log(newEquipments);
             const result = await sportsEquipments.insertOne(newEquipments);
             res.send(result);
         })
 
-        app.get('/equipments', async(req, res) => {
+        // All Sports Equipment
+        app.get('/equipments', async (req, res) => {
             const cursor = sportsEquipments.find();
             const result = await cursor.toArray();
             res.send(result);
         })
+
+        // Specific equipment Id
+        app.get('/equipments/:id', async(req, res) => {
+            const id = req.params.id;
+            // console.log(id);
+            const query = { _id: new ObjectId(id)}
+            // console.log(query);
+            const result = await sportsEquipments.findOne(query);
+            res.send(result);
+        })
+
 
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
@@ -51,7 +63,7 @@ async function run() {
 run().catch(console.dir);
 
 
-app.get('/', async(req, res) => {
+app.get('/', async (req, res) => {
     res.send("Sports Equipment Server is Running");
 })
 

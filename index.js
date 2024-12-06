@@ -44,15 +44,25 @@ async function run() {
         })
 
         // Specific equipment Id
-        app.get('/equipments/:id', async(req, res) => {
+        app.get('/equipments/:id', async (req, res) => {
             const id = req.params.id;
             // console.log(id);
-            const query = { _id: new ObjectId(id)}
+            const query = { _id: new ObjectId(id) }
             // console.log(query);
             const result = await sportsEquipments.findOne(query);
             res.send(result);
         })
 
+        // Specific equipment email
+        app.get('/equipments/email/:email', async (req, res) => {
+            const email = req.params.email;
+            // console.log(email);
+            const query = { userEmail: email }
+            // console.log(query);
+            const result = await sportsEquipments.find(query).toArray();
+            // console.log(result);
+            res.send(result)
+        })
 
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {

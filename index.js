@@ -43,6 +43,13 @@ async function run() {
             res.send(result);
         })
 
+        // 6 Sports Equipment
+        app.get('/equipments/limited', async(req, res) => {
+            const cursor = sportsEquipments.find().limit(6);
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
         //Read Specific equipment Id
         app.get('/equipments/:id', async (req, res) => {
             const id = req.params.id;
